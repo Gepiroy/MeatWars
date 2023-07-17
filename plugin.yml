@@ -1,0 +1,8 @@
+name: MeatWars
+main: MeatWars.main
+version: 1337
+commands:
+  save:
+  edit:
+  pay:
+  gift:
