@@ -14,147 +14,173 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import MeatWars.main;
 
-
 public class SQLConnection {
 	private Connection c;
-	String host,port,login,pass,database,table;
-	public void connect()
-	{
+	String host, port, login, pass, database, table;
+
+	public void connect() {
+		GepUtil.debug("&bSQLConnection connect() ...", null, "info");
 		File file = new File(main.instance.getDataFolder() + File.separator + "mysql.yml");
 		FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
-		if(!conf.contains("Host")){
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED+"No MySQL cfg.");
+		if (!conf.contains("Host")) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "No MySQL cfg.");
 			conf.set("Host", "localhost");
 			conf.set("User", "mysql");
 			conf.set("Pass", "mysql");
 			conf.set("BaseName", "gepcraft");
 			GepUtil.saveCfg(conf, file);
 		}
-		
-		host = conf.getString("Host");port = "3306";login = conf.getString("User");pass = conf.getString("Pass");database = conf.getString("BaseName");
+
+		host = conf.getString("Host");
+		port = "3306";
+		login = conf.getString("User");
+		pass = conf.getString("Pass");
+		database = conf.getString("BaseName");
 		table = "CRPlayers";
-			if (c != null)
-			{
-			    close();
-			}
-			try
-			{
-			    c = DriverManager.getConnection("jdbc:mysql://" + host + ":3306/" + database + "?useUnicode=true&characterEncoding=utf8&autoReconnect=true" , login, pass);
-			}
-			catch (SQLException ex)
-			{
-			    ex.printStackTrace();
-			    GepUtil.debug("ВКЛЮЧИ БД! ENABLE BD!!!!!!!", null, "error");
-			}
-			
-			TryToCreateTable();
+		if (c != null) {
+			close();
+		}
+		try {
+			c = DriverManager.getConnection("jdbc:mysql://" + host + ":3306/" + database
+					+ "?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false", login, pass);
+			GepUtil.debug("&ac was set without exceptions. The c is "+c, null, "info");
+		} catch (SQLException ex) {
+			GepUtil.debug("c was NOT set correctly! ENABLE DB!!!!!!!", null, "error");
+			ex.printStackTrace();
+		}
+
+		TryToCreateTable();
 	}
-	public void close()
-	{
-	        try {
-	            c.close();
-	        } catch (SQLException ex) {
-	            ex.printStackTrace();
-	        }
+
+	public void close() {
+		try {
+			c.close();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
 	}
-	public void TryToCreateTable()
-	{
-		Statement state;
+
+	public void TryToCreateTable() {
+		GepUtil.debug("&bSQLConnection TryToCreateTable() ...", null, "info");
 		
+		Statement state;
+
 		try {
 			state = c.createStatement();
-			state.executeUpdate("CREATE TABLE IF NOT EXISTS " + database + "." + table +
-					" (PlayerName TEXT(20),KitsC TEXT,KitC TEXT,KitsW TEXT,KitW TEXT, Wons INT NOT NULL DEFAULT 0, Games INT NOT NULL DEFAULT 0, Achs TEXT, achPoints INT NOT NULL DEFAULT 0);"
-					);
+			state.executeUpdate("CREATE TABLE IF NOT EXISTS " + database + "." + table
+					+ " (PlayerName TEXT(20),KitsC TEXT,KitC TEXT,KitsW TEXT,KitW TEXT, Wons INT NOT NULL DEFAULT 0, Games INT NOT NULL DEFAULT 0, Achs TEXT, achPoints INT NOT NULL DEFAULT 0);");
+
+			GepUtil.debug("&athe table was created without exceptions.", null, "info");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			GepUtil.debug("ENABLE BD! Error from method TryToCreateTable", null, "error");
 		}
 	}
-	public void NewStats(String PlayerName)
-	{
+
+	public void NewStatsa(String PlayerName) {
 		Statement state;
 		ResultSet res;
-		
+
 		try {
-			state = c.createStatement(); //SELECT * FROM database.table WHERE PlayerName = 'PlayerName';
-			res = state.executeQuery("SELECT * FROM " + database + "." + table + " WHERE PlayerName = '" + PlayerName + "';");
-												//INSERT INTO database.table (PlayerName,KitC,KitW) VALUES('PlayerName','Защитник','Варвар');
-			if(!res.next()) state.executeUpdate("INSERT INTO " + database + "." + table + " (PlayerName,KitC,KitW,KitsC,KitsW,Achs) VALUES('" + PlayerName + "','§9Защитник','§cВарвар','','','');");
-			//state.executeUpdate("UPDATE " + database + "." + table + " SET Perks = '" + "" + "',maxPerks = '" + 1 + "',MinedStats = '" + "" + "',Other = '" + "FAMILY:100;CRIME:0;" + "' WHERE PlayerName = '" + PlayerName + "';");
+			state = c.createStatement(); // SELECT * FROM database.table WHERE PlayerName = 'PlayerName';
+			res = state.executeQuery(
+					"SELECT * FROM " + database + "." + table + " WHERE PlayerName = '" + PlayerName + "';");
+			// INSERT INTO database.table (PlayerName,KitC,KitW)
+			// VALUES('PlayerName','Защитник','Варвар');
+			if (!res.next())
+				state.executeUpdate(
+						"INSERT INTO " + database + "." + table + " (PlayerName,KitC,KitW,KitsC,KitsW,Achs) VALUES('"
+								+ PlayerName + "','§9Защитник','§cВарвар','','','');");
+			// state.executeUpdate("UPDATE " + database + "." + table + " SET Perks = '" +
+			// "" + "',maxPerks = '" + 1 + "',MinedStats = '" + "" + "',Other = '" +
+			// "FAMILY:100;CRIME:0;" + "' WHERE PlayerName = '" + PlayerName + "';");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	public void SetText(String PlayerName, String col, String set)
-	{
+
+	public void SetTexta(String PlayerName, String col, String set) {
 		Statement state;
 		ResultSet res;
-		
+
 		try {
 			state = c.createStatement();
-			res = state.executeQuery("SELECT * FROM " + database + "." + table + " WHERE PlayerName = '" + PlayerName + "';");
-			
-			if(!res.next()) state.executeUpdate("INSERT INTO " + database + "." + table + " (PlayerName,"+col+") VALUES('" + PlayerName + "','" + set + "');");
-			else state.executeUpdate("UPDATE " + database + "." + table + " SET "+col+" = '" + set + "' WHERE PlayerName = '" + PlayerName + "';");
+			res = state.executeQuery(
+					"SELECT * FROM " + database + "." + table + " WHERE PlayerName = '" + PlayerName + "';");
+
+			if (!res.next())
+				state.executeUpdate("INSERT INTO " + database + "." + table + " (PlayerName," + col + ") VALUES('"
+						+ PlayerName + "','" + set + "');");
+			else
+				state.executeUpdate("UPDATE " + database + "." + table + " SET " + col + " = '" + set
+						+ "' WHERE PlayerName = '" + PlayerName + "';");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			GepUtil.debug("ENABLE BD! Error from method SetText", null, "error");
 		}
 	}
-	public String GetText(String name, String col)
-	{
+
+	public String GetTexta(String name, String col) {
 		Statement state;
 		ResultSet res;
-		String ret=null;
-		
+		String ret = null;
+
 		try {
-			if (!c.isValid(1)){
+			if (!c.isValid(1)) {
 				c.close();
 				connect();
 			}
-		}catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			state = c.createStatement();
 			res = state.executeQuery("SELECT * FROM " + database + "." + table + " WHERE PlayerName = '" + name + "';");
-			if(!res.next())ret=null;
-			else ret = res.getString(col);
+			if (!res.next())
+				ret = null;
+			else
+				ret = res.getString(col);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			GepUtil.debug("ENABLE BD! Error from method GetText", null, "error");
 		}
 		return ret;
 	}
-	public void SetInt(String PlayerName, String col, int set)
-	{
+
+	public void SetInta(String PlayerName, String col, int set) {
 		Statement state;
 		ResultSet res;
-		
+
 		try {
 			state = c.createStatement();
-			res = state.executeQuery("SELECT * FROM " + database + "." + table + " WHERE PlayerName = '" + PlayerName + "';");
-			
-			if(!res.next()) state.executeUpdate("INSERT INTO " + database + "." + table + " (PlayerName,"+col+") VALUES('" + PlayerName + "','" + set + "');");
-			else state.executeUpdate("UPDATE " + database + "." + table + " SET "+col+" = '" + set + "' WHERE PlayerName = '" + PlayerName + "';");
+			res = state.executeQuery(
+					"SELECT * FROM " + database + "." + table + " WHERE PlayerName = '" + PlayerName + "';");
+
+			if (!res.next())
+				state.executeUpdate("INSERT INTO " + database + "." + table + " (PlayerName," + col + ") VALUES('"
+						+ PlayerName + "','" + set + "');");
+			else
+				state.executeUpdate("UPDATE " + database + "." + table + " SET " + col + " = '" + set
+						+ "' WHERE PlayerName = '" + PlayerName + "';");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			GepUtil.debug("ENABLE BD! Error from method SetInt", null, "error");
 		}
 	}
-	public int GetInt(String name, String col)
-	{
+
+	public int GetInta(String name, String col) {
 		Statement state;
 		ResultSet res;
-		int ret=-1;
-		
+		int ret = -1;
+
 		try {
 			state = c.createStatement();
 			res = state.executeQuery("SELECT * FROM " + database + "." + table + " WHERE PlayerName = '" + name + "';");
-			if(!res.next())ret=-2;
-			else ret = res.getInt(col);
+			if (!res.next())
+				ret = -2;
+			else
+				ret = res.getInt(col);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			GepUtil.debug("ENABLE BD! Error from method GetText", null, "error");

@@ -168,14 +168,14 @@ public class PlayerInfo {
 		}
 		return false;
 	}
-	public void addSteal(Location l){
+	public void setSteal(Location l){
 		//Player p=getPlayer();
 		//boolean axe=timers.containsKey("axeRush");
 		int i=0;
 		while(true){
 			i++;
 			if(i>=100){
-				GepUtil.globMessage("error");
+				GepUtil.debug("error: i>100 in setSteal()", null, "error");
 				return;
 			}
 			Location loc=l.clone().add(new Random().nextInt(20)-10, 0, new Random().nextInt(20)-10);

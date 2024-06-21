@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import MeatWars.Events;
-import utilsMeat.GepUtil;
+//import utilsMeat.GepUtil;
 import utilsMeat.ItemUtil;
 
 public class Mclass {
@@ -49,7 +49,7 @@ public class Mclass {
 				lore.add(ChatColor.GREEN+"Разблокировано!");
 			}
 			else{
-				lore.add(ChatColor.YELLOW+"Цена: "+GepUtil.boolCol(Donate.main.connection.GetG(p.getName())>=price)+price+ChatColor.BLUE+" G$"+ChatColor.AQUA+" (у вас "+Donate.main.connection.GetG(p.getName())+")");
+				//lore.add(ChatColor.YELLOW+"Цена: "+GepUtil.boolCol(Donate.main.connection.GetG(p.getName())>=price)+price+ChatColor.BLUE+" G$"+ChatColor.AQUA+" (у вас "+Donate.main.connection.GetG(p.getName())+")");
 			}
 		}
 		else{
@@ -61,7 +61,7 @@ public class Mclass {
 				lore.add(ChatColor.GREEN+"Разблокировано!");
 			}
 			else{
-				lore.add(ChatColor.YELLOW+"Цена: "+GepUtil.boolCol(Donate.main.connection.GetG(p.getName())>=price)+price+ChatColor.BLUE+" G$"+ChatColor.AQUA+" (у вас "+Donate.main.connection.GetG(p.getName())+")");
+				//lore.add(ChatColor.YELLOW+"Цена: "+GepUtil.boolCol(Donate.main.connection.GetG(p.getName())>=price)+price+ChatColor.BLUE+" G$"+ChatColor.AQUA+" (у вас "+Donate.main.connection.GetG(p.getName())+")");
 			}
 		}
 		meta.setLore(lore);
@@ -69,8 +69,8 @@ public class Mclass {
 		return item;
 	}
 	public boolean buy(Player p, boolean isCastle){
-		GlobPInfo gpi=Events.gplist.get(p.getName());
-		if(Donate.main.connection.GetG(p.getName())>=price){
+		//GlobPInfo gpi=Events.gplist.get(p.getName());
+		/*if(Donate.main.connection.GetG(p.getName())>=price){
 			if(gpi.achPoints<=0&&!p.hasPermission("Unl")){
 				p.sendMessage(ChatColor.GOLD+"У вас нет очков достижений. "+ChatColor.AQUA+"Выполните любую ачивку, если хотите получить этот набор!");
 				p.sendMessage(ChatColor.AQUA+"Вы так же можете сделать пожертвование проекту, за что получите группу "+ChatColor.BLUE+"Unlocker"+ChatColor.AQUA+". Эта группа убирает многие ограничения, в том числе и ограничение по ачивкам. "+ChatColor.GRAY+"(Подробнее /donate)");
@@ -83,9 +83,9 @@ public class Mclass {
 			gpi.saveSQL();
 			return true;
 		}
-		else{
+		else{*/
 			p.sendMessage(ChatColor.GOLD+"Не хватает гепчиков. "+ChatColor.AQUA+"Вы можете заработать их, играя на проекте!");
 			return false;
-		}
+		//}
 	}
 }

@@ -46,7 +46,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import cmds.addG;
+//import cmds.addG;
 import objMeat.Ach;
 import objMeat.GlobPInfo;
 import objMeat.PlayerInfo;
@@ -82,18 +82,18 @@ public class Events implements Listener{
 		o.setDisplaySlot(DisplaySlot.SIDEBAR);
 		p.setScoreboard(s);
 		p.getInventory().clear();
-		if(main.con.GetText(p.getName(), "KitC")==null){
+		/*if(main.con.GetText(p.getName(), "KitC")==null){
 			main.con.NewStats(p.getName());
-		}
+		}*/
 		if(Bukkit.getOnlinePlayers().size()==1){
 			GlobPInfo gpi = new GlobPInfo(p.getName());
 			if(gpi.games>=3&&gpi.wons>=1){
 				main.full=true;
-				main.scon.SetInt("Type", 2);
+				//main.scon.SetInt("Type", 2);
 			}
 			else{
 				main.full=false;
-				main.scon.SetInt("Type", 1);
+				//main.scon.SetInt("Type", 1);
 			}
 		}
 		if(!main.full){
@@ -131,12 +131,12 @@ public class Events implements Listener{
 			GepUtil.globMessage("Все враги ливнули)");
 		}
 		gplist.remove(p.getName());
-		if(main.money.containsKey(p.getName()))addG.addG$(p.getName(), main.money.get(p.getName()), false);
+//		if(main.money.containsKey(p.getName()))addG.addG$(p.getName(), main.money.get(p.getName()), false);
 		main.money.remove(p.getName());
 		doLeave(p);
 		if(Bukkit.getOnlinePlayers().size()==1){
-			main.scon.SetInt("CanPlay", 1);
-			main.scon.SetInt("Type", 3);
+			//main.scon.SetInt("CanPlay", 1);
+			//main.scon.SetInt("Type", 3);
 		}
 	}
 	public static void doLeave(Player p){
